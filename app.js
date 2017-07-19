@@ -1,27 +1,38 @@
-console.log('Starting App');
+console.log('Starting app');
 
-/*const fs = require('fs');
-//const os = require('os');
+const fs = require('fs');
+const _ = require('lodash');
+const yargs = require('yargs');
 
-const os = require('os');
-var user = os.userInfo();
-console.log(user);*/
-//fs.appendFile('greetings.txt', 'Hello World!!');
+const notes = require('./notes.js');
 
-var os = require("os");
+const argv = yargs.argv;
 
-// Endianness
-console.log('endianness : ' + os.endianness());
+var command = process.argv[2];
+console.log('Command', command);
+console.log('Process', process.argv);
 
-// OS type
-console.log('type : ' + os.type());
 
-// OS platform
-console.log('platform : ' + os.platform());
-
-// Total system memory
-console.log('total memory : ' + os.totalmem() + " bytes.");
-
-// Total free memory
-console.log('free memory : ' + os.freemem() + " bytes.");
-console.log(os.userInfo());
+if(command === 'add'){
+     var note= notes.addNote(argv.title, argv.body);
+     if(note){
+         console.log('Note Created');
+         console.log('--------------');
+         console.log(`Title: ${note.title}`);
+         console.log(`Body: ${note.body}`);
+     }
+     else{
+         console.log('Note title taken');
+     }
+}else if(command === 'list'){
+      notes.getAll();
+}else if(command === 'read'){
+      notes.getNote(argv.title);
+}else if(command === 'remove'){
+     var noteRemoved = notes.removeNote(argv.title);
+     var message = noteRemoved ? 'Note was Removed' : 'Note not found';
+     console.log(message); 
+}
+else{
+    console.log('Command not recognised');
+}
